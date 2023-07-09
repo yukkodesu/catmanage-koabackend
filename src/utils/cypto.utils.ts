@@ -26,3 +26,19 @@ export const verifyToken = function (token: string): boolean {
   if (sign_verify !== sign) return false;
   return true;
 };
+
+type AuthIdentityType = {
+  sub: string;
+  name: string;
+  iat: string;
+};
+
+export const getAuthIdentity = function (
+  token: string
+): AuthIdentityType | null {
+  const [_, payload] = token.split(".");
+  if (!verifyToken(token)) return null;
+  return JSON.parse(
+    CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(payload))
+  );
+};
