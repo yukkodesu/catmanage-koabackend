@@ -1,6 +1,7 @@
-const { verifyToken } = require("../utils/cypto.utils");
+import { verifyToken } from "../utils/cypto.utils";
+import Koa from "koa";
 
-module.exports = async (ctx, next) => {
+export default async (ctx: Koa.Context, next: Koa.Next) => {
   const cookies = ctx.parsedCookies;
   if (cookies?.auth_token && verifyToken(cookies.auth_token)) {
     await next();

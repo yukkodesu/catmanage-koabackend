@@ -1,19 +1,25 @@
-const User = require("../db/model/User.model");
-const Router = require("@koa/router");
-const { generateToken } = require("../utils/cypto.utils");
+import { getByUid } from "../db/model/User.model";
+import Router from "@koa/router";
+import { generateToken } from "../utils/cypto.utils";
 
 const router = new Router();
-
+type LoginBodyType = {
+  uid: string;
+  password: string;
+};
 router.post("/login", async (ctx) => {
   // ctx.status = 200;
-  const { uid, password } = ctx.request.body;
+  const { uid, password }: LoginBodyType = ctx.request.body;
   try {
-    const user = await User.getByUid(uid);
+    const user = await getByUid(uid);
+    if (!user) {
+      throw new Error("query return object null");
+    }
     const {
       uid: uid_db,
       password: password_db,
       username,
-    } = user.at(0).dataValues;
+    } = user.dataValues;
     if (uid_db === Number(uid) && password_db === password) {
       ctx.status = 200;
       ctx.cookies.set("auth_token", generateToken(uid_db, username));
@@ -22,9 +28,10 @@ router.post("/login", async (ctx) => {
     }
     ctx.status = 403;
   } catch (e) {
+    if (!(e instanceof Error)) return;
     console.error(e);
     ctx.body = e.message;
   }
 });
 
-module.exports = router;
+export default router;

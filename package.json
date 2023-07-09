@@ -1,21 +1,36 @@
 {
   "name": "restapi",
   "version": "1.0.0",
-  "main": "server.js",
+  "main": "./src/server.ts",
   "license": "MIT",
   "scripts": {
-    "serve": "nodemon server.js"
+    "serve": "nodemon",
+    "ts:init": "tsc --init",
+    "eslint:init": "eslint --init"
   },
   "dependencies": {
     "@koa/bodyparser": "^5.0.0",
     "@koa/router": "^12.0.0",
+    "@types/crypto-js": "^4.1.1",
+    "@types/koa__router": "^12.0.0",
     "crypto-js": "^4.1.1",
     "koa": "^2.14.2",
     "pg": "^8.11.1",
     "pg-hstore": "^2.3.4",
-    "sequelize": "^6.32.1"
+    "reflect-metadata": "^0.1.13",
+    "sequelize": "^6.32.1",
+    "sequelize-typescript": "^2.1.5"
   },
   "devDependencies": {
-    "nodemon": "^2.0.22"
+    "@types/koa": "^2.13.6",
+    "@types/node": "^20.4.1",
+    "@types/validator": "^13.7.17",
+    "@typescript-eslint/eslint-plugin": "^5.61.0",
+    "@typescript-eslint/parser": "^5.61.0",
+    "eslint": "^8.44.0",
+    "nodemon": "^2.0.22",
+    "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.1.6"
   }
 }
