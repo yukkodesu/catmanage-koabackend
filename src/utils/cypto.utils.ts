@@ -1,29 +1,35 @@
 import { serverKey } from "../config/server.config";
-import CryptoJS from "crypto-js";
+import { createHmac } from "crypto";
 export const generateToken = function (uid: string, username: string): string {
-  const header = CryptoJS.enc.Base64.parse(
+  const header = Buffer.from(
     JSON.stringify({
       alg: "HS256",
       typ: "JWT",
     })
-  );
-  const payload = CryptoJS.enc.Base64.parse(
+  ).toString("base64url");
+  const payload = Buffer.from(
     JSON.stringify({
       sub: uid,
       name: username,
-      iat: Date.now().toString(),
+      iat: Math.round(Date.now() / 1000),
     })
-  );
-  const sign = CryptoJS.HmacSHA256(`${header}.${payload}`, serverKey);
+  ).toString("base64url");
+  const sign = createHmac("sha256", serverKey)
+    .update(Buffer.from(`${header}.${payload}`))
+    .digest("base64url");
   return `${header}.${payload}.${sign}`;
 };
 export const verifyToken = function (token: string): boolean {
   const [header, payload, sign] = token.split(".");
-  const sign_verify = CryptoJS.HmacSHA256(
-    `${header}.${payload}`,
-    serverKey
-  ).toString();
-  if (sign_verify !== sign) return false;
+
+  const sign_verify = createHmac("sha256", serverKey)
+    .update(Buffer.from(`${header}.${payload}`))
+    .digest("base64url");
+  if (sign_verify !== sign) {
+    console.log(`Auth Failed`);
+    return false;
+  }
+  console.log(`Auth Success`);
   return true;
 };
 
@@ -38,7 +44,5 @@ export const getAuthIdentity = function (
 ): AuthIdentityType | null {
   const [_, payload] = token.split(".");
   if (!verifyToken(token)) return null;
-  return JSON.parse(
-    CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(payload))
-  );
+  return JSON.parse(Buffer.from(payload, "base64url").toString());
 };
