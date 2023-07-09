@@ -5,10 +5,12 @@ import {
   PrimaryKey,
   Unique,
   DataType,
+  AutoIncrement,
 } from "sequelize-typescript";
 
 @Table({ schema: "KoaREST" })
 class User extends Model {
+  @AutoIncrement
   @PrimaryKey
   @Unique
   @Column(DataType.INTEGER)
@@ -21,7 +23,7 @@ class User extends Model {
   password!: String;
 }
 
-const getByUid = async (uid: string) => {
+const getUserByUid = async (uid: string) => {
   const data = await User.findOne({
     where: {
       uid,
@@ -30,5 +32,9 @@ const getByUid = async (uid: string) => {
   return data;
 };
 
+const createUser = async (username: string, password: string): Promise<User> => {
+  return await User.create({ username, password });
+};
+
 export default User;
-export { getByUid };
+export { getUserByUid, createUser };

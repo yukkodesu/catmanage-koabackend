@@ -5,6 +5,7 @@ import { dbConnect } from "./db/sequelize";
 import cookieParser from "./middleware/cookieParser";
 import auth from "./middleware/auth";
 import UserRoutes from "./routes/user.router";
+import CatRoutes from "./routes/cat.router";
 import AuthRoutes from "./routes/auth.router";
 
 const app = new Koa();
@@ -15,6 +16,7 @@ app.use(AuthRoutes.routes());
 
 app.use(auth);
 app.use(UserRoutes.routes());
+app.use(CatRoutes.routes());
 
 app.use((ctx, next) => {
   ctx.body = "sequlize webapi test project";

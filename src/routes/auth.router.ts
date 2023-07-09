@@ -1,4 +1,4 @@
-import { getByUid } from "../db/model/User.model";
+import { getUserByUid } from "../db/model/Users/User.model";
 import Router from "@koa/router";
 import { generateToken } from "../utils/cypto.utils";
 
@@ -11,7 +11,7 @@ router.post("/login", async (ctx) => {
   // ctx.status = 200;
   const { uid, password }: LoginBodyType = ctx.request.body;
   try {
-    const user = await getByUid(uid);
+    const user = await getUserByUid(uid);
     if (!user) {
       throw new Error("query return object null");
     }
